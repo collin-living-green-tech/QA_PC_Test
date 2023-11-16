@@ -15,6 +15,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
+using NAudio.CoreAudioApi;
 
 namespace CameraCaptureDemo
 {
@@ -31,12 +33,16 @@ namespace CameraCaptureDemo
         private WaveInEvent waveIn;
         private bool hasBt;
 
+        private bool activated = false;
+
         private int mouseTestIdx = 0;
 
         private int curr_x;
         private int curr_y;
 
         private bool[] mouse_test = new bool[4] { false, false, false, false };
+
+        private delegate void AsyncInitAudion();
 
         private string[] mouseTestLabels = new string[]
         {
@@ -53,7 +59,6 @@ namespace CameraCaptureDemo
             filterInfo = new FilterInfoCollection(FilterCategory.VideoInputDevice);
 
 
-
             waveIn = new NAudio.Wave.WaveInEvent
             {
                 DeviceNumber = 0, // customize this to select your microphone device
@@ -64,18 +69,44 @@ namespace CameraCaptureDemo
             waveIn.StartRecording();
             audioOn = true;
 
+            // start audio
+            // StartMicLevel();
+            // start cam
+            new Task(StartCam).Start();
 
+            // check bluetooth
+            new Task(CheckForBt).Start();
 
+            // battery
+            new Task(BatteryChargeOk).Start();
 
+            // dvd
+            new Task(CheckForDvdDrive).Start();
+
+            // activatation
+            new Task(IsWindowsActivated).Start();
             // add ui update worker stuff
             //  backgroundWorker = new BackgroundWorker();
             //    backgroundWorker.DoWork += UpdateMicLvl;
         }
 
+        private void StartMicLevel()
+        {
+            waveIn = new NAudio.Wave.WaveInEvent
+            {
+                DeviceNumber = 0, // customize this to select your microphone device
+                WaveFormat = new NAudio.Wave.WaveFormat(rate: 44100, bits: 16, channels: 2),
+                BufferMilliseconds = 50
+            };
+            waveIn.DataAvailable += ShowPeakMono;
+            waveIn.StartRecording();
+            audioOn = true;
 
+        }
 
-        private void button1_Click(object sender, EventArgs e)
-        {   // create the video
+        private void StartCam()
+        {
+            // create the video
             if (filterInfo.Count > 0)
             {
                 videoDevice = new VideoCaptureDevice(filterInfo[0].MonikerString);
@@ -83,28 +114,30 @@ namespace CameraCaptureDemo
                 videoDevice.Start();
                 camOn = true;
             }
-
-
         }
 
-        private bool BatteryChargeOk()
+
+
+        private void BatteryChargeOk()
         {
             //  using System.Management;
 
             PowerStatus pwr = SystemInformation.PowerStatus;
-            String strBatterylife;
+            
 
+            string battStatus = "\t Not Over 80%";
             if (pwr.BatteryLifePercent >= .80)
             {
-                MessageBox.Show("Battery over 80%");
-                return true;
+                battStatus = "\t Over 80%";
+               
+
             }
-            else
+
+            lblBattery.Invoke((MethodInvoker)delegate
             {
-                strBatterylife = pwr.BatteryLifePercent.ToString();
-                MessageBox.Show("Battery life: " + strBatterylife);
-                return false;
-            }
+                // Running on the UI thread
+                lblBattery.Text += battStatus;
+                });
 
         }
 
@@ -117,7 +150,6 @@ namespace CameraCaptureDemo
 
         private void button2_Click(object sender, EventArgs e)
         {
-
 
             System.Media.SoundPlayer player = new System.Media.SoundPlayer(@"sample-6s.wav");
             player.Play();
@@ -200,20 +232,29 @@ namespace CameraCaptureDemo
                 foreach (var drive in DriveInfo.GetDrives()
                                .Where(d => d.DriveType == DriveType.CDRom))
                 {
-                    if(!drive.IsReady)
+                    if (!drive.IsReady)
                     {
-                        MessageBox.Show($"Please insert a DVD into {drive.Name} and try again.");
+                        lblDvd.Invoke((MethodInvoker)delegate
+                        {
+
+                            lblDvd.Text += $"\tPlease insert a DVD into {drive.Name} and try again.";
+                        });
+
                     }
                     else
                     {
-                        MessageBox.Show($"{drive.Name} is ready");
+                        lblDvd.Invoke((MethodInvoker)delegate
+                        {
+                            lblDvd.Text += $"{drive.Name} is ready";
+                        });
+
                     }
                 }
-                   
+
             }
             else
             {
-                MessageBox.Show("NO DVD DRIVE");
+                lblDvd.Invoke((MethodInvoker)delegate { lblDvd.Text += "NO DVD DRIVE"; });
             }
 
 
@@ -221,27 +262,6 @@ namespace CameraCaptureDemo
         }
 
         private void CheckForBt()
-        {
-            try
-            {
-                BluetoothClient client = new BluetoothClient();
-                hasBt = true;
-            }
-            catch (PlatformNotSupportedException exc)
-            {
-                Console.WriteLine(exc.Message);
-                hasBt = false;
-                this.lblBtDevices.Text = exc.Message;
-            }
-
-        }
-
-
-
-       
-
-
-        private void button5_Click(object sender, EventArgs e)
         {
             BtLib.BtHelper btHelper = new BtLib.BtHelper();
 
@@ -251,15 +271,32 @@ namespace CameraCaptureDemo
 
                 foreach (var device in devices)
                 {
-                    lblBtDevices.Text += $"\n{device}";
+                    lblBtDevices.Invoke((MethodInvoker)delegate
+                    {
+
+                        lblBtDevices.Text += $"\n{device}";
+                    });
+
                 }
             }
             else
             {
-                lblBtDevices.Text += "\nNo bluetooth protocol stack found.";
+                lblBtDevices.Invoke((MethodInvoker)delegate
+                {
+
+                    lblBtDevices.Text += "\nNo bluetooth protocol stack found.";
+                });
+
             }
-            // Console.ReadLine();
+
         }
+
+
+
+
+
+
+
 
         private void panel1_MouseEnter(object sender, EventArgs e)
         {
@@ -279,15 +316,7 @@ namespace CameraCaptureDemo
             lblCursorX.Text = curr_x.ToString();
             lblCursorY.Text = curr_y.ToString();
 
-            // test
-            if (curr_y <= 5)
-                mouse_test[0] = true;
-            if (curr_y >= 160)
-                mouse_test[1] = true;
-            if (curr_x <= 5)
-                mouse_test[2] = true;
-            if (curr_x >= 240)
-                mouse_test[3] = true;
+
 
 
         }
@@ -300,15 +329,23 @@ namespace CameraCaptureDemo
 
         }
 
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+
+
+        public void IsWindowsActivated()
         {
-            /*
-            if (keyData == (Keys.Control | Keys.F))
+            ManagementScope scope = new ManagementScope("\\root\\cimv2");
+            scope.Connect();
+
+            SelectQuery searchQuery = new SelectQuery("SELECT * FROM SoftwareLicensingProduct WHERE ApplicationID = '55c92734-d682-4d71-983e-d6ec3f16059f' and LicenseStatus = 1");
+            ManagementObjectSearcher searcherObj = new ManagementObjectSearcher(scope, searchQuery);
+            string isActivated = "\tfalse";
+            using (ManagementObjectCollection obj = searcherObj.Get())
             {
-                MessageBox.Show("What the Ctrl+F?");
-                return true;
-            }*/
-            return base.ProcessCmdKey(ref msg, keyData);
+                if (obj.Count > 0)
+                    isActivated = "\ttrue";
+            }
+
+            lblActivation.Invoke((MethodInvoker)delegate { lblActivation.Text += isActivated; });
         }
     }
 }

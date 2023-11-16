@@ -25,87 +25,46 @@
         /// </summary>
         private void InitializeComponent()
         {
-            button1 = new Button();
             pbx1 = new PictureBox();
             button2 = new Button();
-            button3 = new Button();
             lblMicLevel = new Label();
-            button4 = new Button();
-            button5 = new Button();
             lblBtDevices = new Label();
             panel1 = new Panel();
             lblCursorY = new Label();
             lblCursorX = new Label();
             lblMouseInstructions = new Label();
+            lblBattery = new Label();
+            lblDvd = new Label();
+            lblActivation = new Label();
             ((System.ComponentModel.ISupportInitialize)pbx1).BeginInit();
             SuspendLayout();
-            // 
-            // button1
-            // 
-            button1.Location = new Point(268, 322);
-            button1.Name = "button1";
-            button1.Size = new Size(75, 23);
-            button1.TabIndex = 0;
-            button1.Text = "Camera";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
             // 
             // pbx1
             // 
             pbx1.Location = new Point(57, 33);
             pbx1.Name = "pbx1";
-            pbx1.Size = new Size(286, 256);
+            pbx1.Size = new Size(286, 215);
             pbx1.TabIndex = 1;
             pbx1.TabStop = false;
             // 
             // button2
             // 
-            button2.Location = new Point(57, 322);
+            button2.Location = new Point(57, 396);
             button2.Name = "button2";
             button2.Size = new Size(75, 23);
             button2.TabIndex = 2;
-            button2.Text = "Sound Asterix";
+            button2.Text = "Speakers";
             button2.UseVisualStyleBackColor = true;
             button2.Click += button2_Click;
-            // 
-            // button3
-            // 
-            button3.Location = new Point(57, 396);
-            button3.Name = "button3";
-            button3.Size = new Size(75, 23);
-            button3.TabIndex = 3;
-            button3.Text = "DVD";
-            button3.UseVisualStyleBackColor = true;
-            button3.Click += button3_Click;
             // 
             // lblMicLevel
             // 
             lblMicLevel.AutoSize = true;
-            lblMicLevel.Location = new Point(151, 404);
+            lblMicLevel.Location = new Point(159, 400);
             lblMicLevel.Name = "lblMicLevel";
             lblMicLevel.Size = new Size(184, 15);
             lblMicLevel.TabIndex = 4;
             lblMicLevel.Text = "                                                           ";
-            // 
-            // button4
-            // 
-            button4.Location = new Point(56, 356);
-            button4.Name = "button4";
-            button4.Size = new Size(75, 23);
-            button4.TabIndex = 5;
-            button4.Text = "Battery";
-            button4.UseVisualStyleBackColor = true;
-            button4.Click += button4_Click;
-            // 
-            // button5
-            // 
-            button5.Location = new Point(165, 322);
-            button5.Name = "button5";
-            button5.Size = new Size(75, 23);
-            button5.TabIndex = 6;
-            button5.Text = "Bluetooth";
-            button5.UseVisualStyleBackColor = true;
-            button5.Click += button5_Click;
             // 
             // lblBtDevices
             // 
@@ -152,23 +111,49 @@
             lblMouseInstructions.TabIndex = 9;
             lblMouseInstructions.Text = "Move Mouse Inside Box";
             // 
+            // lblBattery
+            // 
+            lblBattery.AutoSize = true;
+            lblBattery.Location = new Point(57, 317);
+            lblBattery.Name = "lblBattery";
+            lblBattery.Size = new Size(82, 15);
+            lblBattery.TabIndex = 10;
+            lblBattery.Text = "Battery Status:";
+            // 
+            // lblDvd
+            // 
+            lblDvd.AutoSize = true;
+            lblDvd.Location = new Point(57, 285);
+            lblDvd.Name = "lblDvd";
+            lblDvd.Size = new Size(33, 15);
+            lblDvd.TabIndex = 11;
+            lblDvd.Text = "DVD:";
+            // 
+            // lblActivation
+            // 
+            lblActivation.AutoSize = true;
+            lblActivation.Location = new Point(57, 359);
+            lblActivation.Name = "lblActivation";
+            lblActivation.Size = new Size(60, 15);
+            lblActivation.TabIndex = 12;
+            lblActivation.Text = "Activated:";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(676, 450);
+            Controls.Add(lblActivation);
+            Controls.Add(lblDvd);
+            Controls.Add(lblBattery);
             Controls.Add(lblMouseInstructions);
             Controls.Add(lblCursorY);
             Controls.Add(panel1);
             Controls.Add(lblCursorX);
             Controls.Add(lblBtDevices);
-            Controls.Add(button5);
-            Controls.Add(button4);
             Controls.Add(lblMicLevel);
-            Controls.Add(button3);
             Controls.Add(button2);
             Controls.Add(pbx1);
-            Controls.Add(button1);
             Name = "Form1";
             Text = "Form1";
             FormClosing += StopRecording;
@@ -177,21 +162,17 @@
             PerformLayout();
         }
 
-
-
         #endregion
-
-        private Button button1;
         private PictureBox pbx1;
         private Button button2;
-        private Button button3;
         private Label lblMicLevel;
-        private Button button4;
-        private Button button5;
         private Label lblBtDevices;
         private Panel panel1;
         private Label lblCursorY;
         private Label lblCursorX;
         private Label lblMouseInstructions;
+        private Label lblBattery;
+        private Label lblDvd;
+        private Label lblActivation;
     }
 }
