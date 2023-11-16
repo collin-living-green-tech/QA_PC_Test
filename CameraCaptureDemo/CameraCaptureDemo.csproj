@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-	   <TargetFramework>net6.0-windows$([Microsoft.Build.Utilities.ToolLocationHelper]::GetLatestSDKTargetPlatformVersion('Windows', '10.0'))</TargetFramework>  
-	      <!--<TargetFramework>net6.0-windows</TargetFramework>   -->
+	  <!-- <TargetFramework>net6.0-windows$([Microsoft.Build.Utilities.ToolLocationHelper]::GetLatestSDKTargetPlatformVersion('Windows', '10.0'))</TargetFramework>  -->
+	  <TargetFramework>net6.0-windows</TargetFramework>   
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -17,15 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="System.Runtime.InteropServices.WindowsRuntime">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Microsoft SDKs\NuGetPackages\System.Runtime.InteropServices.WindowsRuntime\4.0.0\ref\dotnet\System.Runtime.InteropServices.WindowsRuntime.dll</HintPath>
+    <Reference Include="BtLib">
+      <HintPath>..\..\BtLib\BtLib\bin\Debug\BtLib.dll</HintPath>
     </Reference>
-    <Reference Include="System.Runtime.WindowsRuntime">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Microsoft SDKs\NuGetPackages\System.Runtime.WindowsRuntime\4.0.0\ref\dotnet\System.Runtime.WindowsRuntime.dll</HintPath>
-    </Reference>
-  
-  
- 
   </ItemGroup>
 
   <ItemGroup>

@@ -9,8 +9,6 @@ using System.Management;
 using System.Security.Policy;
 using System.Windows.Forms;
 
-using Windows.Devices.Bluetooth;
-using Windows.Devices.Enumeration;
 using InTheHand.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
@@ -240,73 +238,25 @@ namespace CameraCaptureDemo
 
 
 
-        private void ListBtDevices()
-        {
-            // enumerate
-            // Query for extra properties you want returned
-            string[] requestedProperties = { "System.Devices.Aep.DeviceAddress", "System.Devices.Aep.IsConnected" };
-
-            DeviceWatcher deviceWatcher =
-                        DeviceInformation.CreateWatcher(
-                                BluetoothLEDevice.GetDeviceSelectorFromPairingState(false),
-                                requestedProperties,
-                                DeviceInformationKind.AssociationEndpoint);
-
-            // Register event handlers before starting the watcher.
-            // Added, Updated and Removed are required to get all nearby devices
-
-            deviceWatcher.Added += DeviceWatcher_Added;
-            deviceWatcher.Updated += DeviceWatcher_Updated;
-            deviceWatcher.Removed += DeviceWatcher_Removed;
-
-            // EnumerationCompleted and Stopped are optional to implement.
-            deviceWatcher.EnumerationCompleted += DeviceWatcher_EnumerationCompleted;
-            deviceWatcher.Stopped += DeviceWatcher_Stopped;
-
-            // Start the watcher.
-            deviceWatcher.Start();
-
-            //    Console.ReadLine();
-
-        }
-
-        private void DeviceWatcher_Stopped(DeviceWatcher sender, object args)
-        {
-            //    throw new NotImplementedException();
-        }
-
-        private void DeviceWatcher_EnumerationCompleted(DeviceWatcher sender, object args)
-        {
-            lblBtDevices.Text += "\nFinished looking for devices";
-        }
-
-        private void DeviceWatcher_Removed(DeviceWatcher sender, DeviceInformationUpdate args)
-        {
-            //   throw new NotImplementedException();
-        }
-
-        private void DeviceWatcher_Updated(DeviceWatcher sender, DeviceInformationUpdate args)
-        {
-            //   throw new NotImplementedException();
-        }
-
-        private void DeviceWatcher_Added(DeviceWatcher sender, DeviceInformation args)
-        {
-
-            if (args.Name.Length > 0)
-            {
-                btNames.Add(args.Name);
-                this.lblBtDevices.Text += $"\n{args.Name}";
-            }
-        }
+       
 
 
         private void button5_Click(object sender, EventArgs e)
         {
-            CheckForBt();
-            if (hasBt)
+            BtLib.BtHelper btHelper = new BtLib.BtHelper();
+
+            if (btHelper.HasBt)
             {
-                ListBtDevices();
+                var devices = btHelper.getBtNames();
+
+                foreach (var device in devices)
+                {
+                    lblBtDevices.Text += $"\n{device}";
+                }
+            }
+            else
+            {
+                lblBtDevices.Text += "\nNo bluetooth protocol stack found.";
             }
             // Console.ReadLine();
         }
