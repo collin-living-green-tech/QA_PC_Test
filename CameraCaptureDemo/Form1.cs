@@ -86,8 +86,8 @@ namespace CameraCaptureDemo
             // activatation
             new Task(IsWindowsActivated).Start();
             // add ui update worker stuff
-            //  backgroundWorker = new BackgroundWorker();
-            //    backgroundWorker.DoWork += UpdateMicLvl;
+
+            new Task(CheckForTouchscreen).Start();
         }
 
         private void StartMicLevel()
@@ -123,21 +123,21 @@ namespace CameraCaptureDemo
             //  using System.Management;
 
             PowerStatus pwr = SystemInformation.PowerStatus;
-            
 
-            string battStatus = "\t Not Over 80%";
+
+            string battStatus = "Not Over 80%";
             if (pwr.BatteryLifePercent >= .80)
             {
-                battStatus = "\t Over 80%";
-               
+                battStatus = "Over 80%";
+
 
             }
 
             lblBattery.Invoke((MethodInvoker)delegate
             {
                 // Running on the UI thread
-                lblBattery.Text += battStatus;
-                });
+                lblBattery.Text = battStatus;
+            });
 
         }
 
@@ -213,6 +213,33 @@ namespace CameraCaptureDemo
             BatteryChargeOk();
         }
 
+        private void CheckForTouchscreen()
+        {
+            ManagementScope rootScope = new ManagementScope("\\root\\cimv2");
+            rootScope.Connect();
+
+            ObjectQuery query = new ObjectQuery("Select * from Win32_PnpSignedDriver Where DeviceName = \"HID-compliant touch screen\"");
+
+            ManagementObjectSearcher searcher = new ManagementObjectSearcher(rootScope, query);
+
+
+            var ts = searcher.Get();
+            var touchResult = "No driver found.";
+            if (ts.Count > 0)
+            {
+                touchResult = "PLEASE TEST TOUCHSCREEN";
+
+            }
+
+            lblTouchVal.Invoke((MethodInvoker)delegate
+            {
+                lblTouchVal.Text = touchResult;
+            });
+
+
+
+
+        }
         private void CheckForDvdDrive()
         {
             ManagementScope rootScope = new ManagementScope("\\root\\cimv2");
@@ -236,8 +263,9 @@ namespace CameraCaptureDemo
                     {
                         lblDvd.Invoke((MethodInvoker)delegate
                         {
+                            // MessageBox.Show("Please insert DVD to test drive and rerun this app.");
 
-                            lblDvd.Text += $"\tPlease insert a DVD into {drive.Name} and try again.";
+                            lblDvd.Text = $"Insert DVD INTO {drive.Name}";
                         });
 
                     }
@@ -245,7 +273,7 @@ namespace CameraCaptureDemo
                     {
                         lblDvd.Invoke((MethodInvoker)delegate
                         {
-                            lblDvd.Text += $"{drive.Name} is ready";
+                            lblDvd.Text = $"{drive.Name} is ready";
                         });
 
                     }
@@ -338,14 +366,14 @@ namespace CameraCaptureDemo
 
             SelectQuery searchQuery = new SelectQuery("SELECT * FROM SoftwareLicensingProduct WHERE ApplicationID = '55c92734-d682-4d71-983e-d6ec3f16059f' and LicenseStatus = 1");
             ManagementObjectSearcher searcherObj = new ManagementObjectSearcher(scope, searchQuery);
-            string isActivated = "\tfalse";
+            string isActivated = "false";
             using (ManagementObjectCollection obj = searcherObj.Get())
             {
                 if (obj.Count > 0)
-                    isActivated = "\ttrue";
+                    isActivated = "true";
             }
 
-            lblActivation.Invoke((MethodInvoker)delegate { lblActivation.Text += isActivated; });
+            lblActivation.Invoke((MethodInvoker)delegate { lblActivation.Text = isActivated; });
         }
     }
 }
