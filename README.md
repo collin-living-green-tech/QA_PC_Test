@@ -6,7 +6,7 @@ Checking some of the basic hardware components on a windows pc
 >1. Bluetooth
 >2. Camera
 >3. Microphone
->4. Speaker (*A file named "sound6-sample.wav" must exist in the working directory for this feature to work.  The button just plays this audio.*)
+>4. Speaker (*A file named "sample-6s.wav" must exist in the working directory for this feature to work.  The button just plays this audio.*)
 >5. Battery charge is above 80 %
 >6. Activation
 >7. DVD Drive *have to insert a dvd in to get full test *
