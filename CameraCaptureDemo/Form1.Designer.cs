@@ -42,6 +42,7 @@
             label3 = new Label();
             label2 = new Label();
             label1 = new Label();
+            lblBtCount = new Label();
             ((System.ComponentModel.ISupportInitialize)pbx1).BeginInit();
             tableLayoutPanel1.SuspendLayout();
             SuspendLayout();
@@ -212,11 +213,20 @@
             label1.TabIndex = 14;
             label1.Text = "DVD:";
             // 
+            // lblBtCount
+            // 
+            lblBtCount.AutoSize = true;
+            lblBtCount.Location = new Point(584, 70);
+            lblBtCount.Name = "lblBtCount";
+            lblBtCount.Size = new Size(0, 15);
+            lblBtCount.TabIndex = 15;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(676, 494);
+            Controls.Add(lblBtCount);
             Controls.Add(tableLayoutPanel1);
             Controls.Add(lblMouseInstructions);
             Controls.Add(lblCursorY);
@@ -252,5 +262,6 @@
         private Label label3;
         private Label label2;
         private Label label1;
+        private Label lblBtCount;
     }
 }

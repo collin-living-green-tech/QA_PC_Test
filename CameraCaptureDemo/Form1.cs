@@ -17,7 +17,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using NAudio.CoreAudioApi;
-
+ 
 namespace CameraCaptureDemo
 {
     public partial class Form1 : Form
@@ -72,22 +72,32 @@ namespace CameraCaptureDemo
             // start audio
             // StartMicLevel();
             // start cam
-            new Task(StartCam).Start();
 
-            // check bluetooth
+
             new Task(CheckForBt).Start();
+            try
+            {
+                new Task(StartCam).Start();
 
-            // battery
-            new Task(BatteryChargeOk).Start();
+                // check bluetooth
 
-            // dvd
-            new Task(CheckForDvdDrive).Start();
 
-            // activatation
-            new Task(IsWindowsActivated).Start();
-            // add ui update worker stuff
+                // battery
+                new Task(BatteryChargeOk).Start();
 
-            new Task(CheckForTouchscreen).Start();
+                // dvd
+                new Task(CheckForDvdDrive).Start();
+
+                // activatation
+                new Task(IsWindowsActivated).Start();
+                // add ui update worker stuff
+
+                new Task(CheckForTouchscreen).Start();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
         }
 
         private void StartMicLevel()
@@ -291,11 +301,14 @@ namespace CameraCaptureDemo
 
         private void CheckForBt()
         {
-            BtLib.BtHelper btHelper = new BtLib.BtHelper();
-
+            BtHelper btHelper = new BtHelper();
+            int devCount = 0;
             if (btHelper.HasBt)
             {
+
                 var devices = btHelper.getBtNames();
+
+                devCount = devices.Count;
 
                 foreach (var device in devices)
                 {
@@ -316,6 +329,12 @@ namespace CameraCaptureDemo
                 });
 
             }
+
+            // show devices count
+            lblBtCount.Invoke((MethodInvoker)delegate
+            {
+                lblBtCount.Text = devCount.ToString();
+            });
 
         }
 

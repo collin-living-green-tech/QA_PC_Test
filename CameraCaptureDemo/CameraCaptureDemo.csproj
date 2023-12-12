@@ -16,11 +16,7 @@
     <PackageReference Include="System.Management" Version="8.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="BtLib">
-      <HintPath>..\..\BtLib\BtLib\bin\Debug\BtLib.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+
 
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
