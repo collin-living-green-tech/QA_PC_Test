@@ -17,25 +17,23 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using NAudio.CoreAudioApi;
- 
+
 namespace CameraCaptureDemo
 {
     public partial class Form1 : Form
     {
         FilterInfoCollection filterInfo;
-        VideoCaptureDevice videoDevice;
+        VideoCaptureDevice? videoDevice;
 
-        BackgroundWorker backgroundWorker;
 
-        private string micLvl = "";
+
         private bool audioOn = false;
         private bool camOn = false;
-        private WaveInEvent waveIn;
-        private bool hasBt;
+        private WaveInEvent? waveIn;
 
-        private bool activated = false;
 
-        private int mouseTestIdx = 0;
+
+
 
         private int curr_x;
         private int curr_y;
@@ -44,13 +42,6 @@ namespace CameraCaptureDemo
 
         private delegate void AsyncInitAudion();
 
-        private string[] mouseTestLabels = new string[]
-        {
-            "Move mouse up out of this region",
-            "Move mouse down out of this region",
-            "Move mouse left out of this region",
-            "Move mouse right out of this region"
-        };
 
         private List<String> btNames = new List<String>();
         public Form1()
@@ -59,24 +50,27 @@ namespace CameraCaptureDemo
             filterInfo = new FilterInfoCollection(FilterCategory.VideoInputDevice);
 
 
-            waveIn = new NAudio.Wave.WaveInEvent
-            {
-                DeviceNumber = 0, // customize this to select your microphone device
-                WaveFormat = new NAudio.Wave.WaveFormat(rate: 44100, bits: 16, channels: 2),
-                BufferMilliseconds = 50
-            };
-            waveIn.DataAvailable += ShowPeakMono;
-            waveIn.StartRecording();
-            audioOn = true;
+
 
             // start audio
             // StartMicLevel();
             // start cam
 
 
-            new Task(CheckForBt).Start();
+
             try
             {
+                waveIn = new NAudio.Wave.WaveInEvent
+                {
+                    DeviceNumber = 0, // customize this to select your microphone device
+                    WaveFormat = new NAudio.Wave.WaveFormat(rate: 44100, bits: 16, channels: 2),
+                    BufferMilliseconds = 50
+                };
+                waveIn.DataAvailable += ShowPeakMono;
+                waveIn.StartRecording();
+                audioOn = true;
+
+                new Task(CheckForBt).Start();
                 new Task(StartCam).Start();
 
                 // check bluetooth
@@ -178,7 +172,12 @@ namespace CameraCaptureDemo
         {
             int barsOn = (int)(barCount * fraction);
             int barsOff = barCount - barsOn;
-            return new string('#', barsOn) + new string('-', barsOff);
+            string lvlString = new string('#', barsOn) + new string('-', barsOff);
+            int maxLength = lvlString.Length > 20 ? 20 : lvlString.Length;
+
+            string lvlStr2 = lvlString.Substring(0, maxLength);
+
+            return lvlStr2;
         }
         private void ShowPeakMono(object? sender, NAudio.Wave.WaveInEventArgs args)
         {

@@ -14,7 +14,7 @@ namespace CameraCaptureDemo
 
         private bool hasBt;
 
-        private bool enumComplete = false;
+        
 
         public BtHelper()
         {
