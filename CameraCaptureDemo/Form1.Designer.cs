@@ -235,7 +235,7 @@
             Controls.Add(lblBtDevices);
             Controls.Add(pbx1);
             Name = "Form1";
-            Text = "Form1";
+            Text = "Laptop Device Check";
             FormClosing += StopRecording;
             ((System.ComponentModel.ISupportInitialize)pbx1).EndInit();
             tableLayoutPanel1.ResumeLayout(false);

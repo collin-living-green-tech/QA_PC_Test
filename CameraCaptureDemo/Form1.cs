@@ -17,6 +17,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using NAudio.CoreAudioApi;
+using System.Linq.Expressions;
 
 namespace CameraCaptureDemo
 {
@@ -69,29 +70,64 @@ namespace CameraCaptureDemo
                 waveIn.DataAvailable += ShowPeakMono;
                 waveIn.StartRecording();
                 audioOn = true;
-
+            }
+            catch (Exception )
+            {
+                lblMicLevel.Text = "Issues with input audio.  Please check that the mic works.";
+            }
+            try
+            {
                 new Task(CheckForBt).Start();
+            }catch(Exception ) {
+                lblBtDevices.Text = "Issues with bluetooth.  Bluetooth must be checked by hand.";
+            }
+            try
+            {
                 new Task(StartCam).Start();
-
-                // check bluetooth
-
-
-                // battery
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Could not start camera.  Make sure camera exists, or disregard this check.");
+            }
+            // check bluetooth
+            // battery
+            try
+            {
                 new Task(BatteryChargeOk).Start();
-
-                // dvd
+            }
+            catch (Exception)
+            {
+                lblBattery.Text = "Is this a laptop ?";
+            }
+            // dvd
+            try
+            {
                 new Task(CheckForDvdDrive).Start();
-
+            }
+            catch (Exception)
+            {
+                lblDvd.Text = "Issues checking for DVD Drive.";
+            }
+            try
+            {
                 // activatation
                 new Task(IsWindowsActivated).Start();
                 // add ui update worker stuff
-
+            }
+            catch (Exception)
+            {
+                lblActivation.Text = "Could not read activation";
+            }
+            try
+            {
                 new Task(CheckForTouchscreen).Start();
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                MessageBox.Show(e.Message);
+                lblTouch.Text = "Error checking for touchscreen";
             }
+              
+      
         }
 
         private void StartMicLevel()
